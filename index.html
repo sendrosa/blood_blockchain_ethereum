@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Αιμοδοσία</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .section {
+      margin: 20px;
+    }
+    button {
+      padding: 5px 16px;
+      border-radius: 4px;
+    }
+
+  </style>
+ 
+      <script src="./node_modules/web3/dist/web3.min.js"></script>
+
+</head>
+<body>
+  <h1>Εφαρμογή Ανταλλαγής Αίματος</h1>
+ 
+
+  <hr/>
+  
+  <div class="section">
+    <h2>User</h2>
+		Ονοματεπώνυμο <input type="text" id="name" /> 
+      Τύπος Αίματος: <input type="text" id="bloodtype" />
+      <button id="confirm">Confirm</button>
+      <span id="Results"></span>
+  </div>
+
+  <hr/>
+
+  <div class="section">
+    <h2>Αιμοδοσία</h2>
+    Κωδικός δότη: <input type="text" id="doner" /> 
+      Κωδικός ασθενή: <input type="text" id="patient" />
+      <button id="aimodosia">Confirm</button>
+      <span id="aimodosiaresult"></span>
+  </div>
+
+  <hr/>
+  
+  <div class="section">
+    <h2>Αποτελέσματα</h2>
+   
+      <br/><br/>
+      Επιτυχής μεταφορά: <span id="result"></span>
+ 
+      <br/><br/>
+      Κλειδί συναλλαγής: <span id="privateKey"></span>
+      <br/><br/>
+     
+      <button id="check">Check Results</button> 
+  </div>
+   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+	
+	 if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+		web3.eth.defaultAccount = web3.eth.accounts[0];
+
+        var DonorContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "newName",
+				"type": "string"
+			},
+			{
+				"name": "newbloodGroup",
+				"type": "string"
+			}
+		],
+		"name": "setInstructor",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getInstructor",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]);
+
+        var Donor = DonorContract.at('0xca35b7d915458ef540ade6068dfe2f44e8fa733c');
+        console.log(Donor);
+		  Donor.getInstructor(function(error, result){
+            if(!error)
+                {
+                    $("#instructor").html(result[0]+' '+result[1]');
+                    console.log(result);
+                }
+            else
+                console.error(error);
+        });
+
+        $("#button").click(function() {
+            Donor.setInstructor($("#name").val(), $("#bloodtype").val());
+        });
+
+
+/script>
+</body>
+</html> 
